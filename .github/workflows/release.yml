@@ -7,27 +7,33 @@ on:
   workflow_dispatch:
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # ← fixes the warning now
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   release-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           repository: wokshenry/Pharmacy
           token: ${{ secrets.CHECKOUT_TOKEN }}
+          path: ./DESKTOP
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.4.0
         with:
-          node-version: 24            # ← upgraded from 20
-      
+          node-version: 24
+
+      - name: Debug — confirm source code is there
+        run: ls ./DESKTOP
+
       - name: Install dependencies
-        run: npm install              # ← changed from npm ci
+        working-directory: ./DESKTOP
+        run: npm install
 
       - name: Build Windows
+        working-directory: ./DESKTOP
         run: npx electron-builder --win --publish always
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -36,20 +42,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           repository: wokshenry/Pharmacy
           token: ${{ secrets.CHECKOUT_TOKEN }}
+          path: ./DESKTOP
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: 24
 
+      - name: Install Linux build tools
+        run: sudo apt-get install -y build-essential python3
+
+      - name: Debug — confirm source code is there
+        run: ls ./DESKTOP
+
       - name: Install dependencies
+        working-directory: ./DESKTOP
         run: npm install
 
       - name: Build Linux
+        working-directory: ./DESKTOP
         run: npx electron-builder --linux --publish always
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -58,20 +73,26 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           repository: wokshenry/Pharmacy
           token: ${{ secrets.CHECKOUT_TOKEN }}
+          path: ./DESKTOP
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: 24
 
+      - name: Debug — confirm source code is there
+        run: ls ./DESKTOP
+
       - name: Install dependencies
+        working-directory: ./DESKTOP
         run: npm install
 
       - name: Build macOS
+        working-directory: ./DESKTOP
         run: npx electron-builder --mac --publish always
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
