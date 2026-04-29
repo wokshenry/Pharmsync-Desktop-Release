@@ -4,31 +4,50 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   release-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          repository: wokshenry/Pharmacy
+          token: ${{ secrets.CHECKOUT_TOKEN }}  # ← read-only token
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm ci
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Build Windows
         run: npx electron-builder --win --publish always
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}     # ← release token
 
   release-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          repository: wokshenry/Pharmacy
+          token: ${{ secrets.CHECKOUT_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm ci
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Build Linux
         run: npx electron-builder --linux --publish always
         env:
@@ -37,12 +56,21 @@ jobs:
   release-mac:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          repository: wokshenry/Pharmacy
+          token: ${{ secrets.CHECKOUT_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm ci
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Build macOS
         run: npx electron-builder --mac --publish always
         env:
