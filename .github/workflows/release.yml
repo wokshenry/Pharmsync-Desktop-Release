@@ -13,11 +13,15 @@ jobs:
   release-windows:
     runs-on: windows-latest
     steps:
+      - name: Wait for source repo to be ready
+        run: sleep 10
+        
       - name: Checkout source code
         uses: actions/checkout@v4.2.2
         with:
           repository: wokshenry/Pharmacy
           token: ${{ secrets.CHECKOUT_TOKEN }}
+          ref: main
           path: ./app
 
       - name: Setup Node.js
@@ -48,11 +52,15 @@ jobs:
   release-linux:
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for source repo to be ready
+        run: sleep 10
+        
       - name: Checkout source code
         uses: actions/checkout@v4.2.2
         with:
           repository: wokshenry/Pharmacy
           token: ${{ secrets.CHECKOUT_TOKEN }}
+          ref: main
           path: ./app
 
       - name: Setup Node.js
@@ -86,11 +94,15 @@ jobs:
   release-mac:
     runs-on: macos-latest
     steps:
+      - name: Wait for source repo to be ready
+        run: sleep 10
+        
       - name: Checkout source code
         uses: actions/checkout@v4.2.2
         with:
           repository: wokshenry/Pharmacy
           token: ${{ secrets.CHECKOUT_TOKEN }}
+          ref: main
           path: ./app
 
       - name: Setup Node.js
